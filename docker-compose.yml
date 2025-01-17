@@ -5,6 +5,8 @@ services:
     image: postgres
     restart: always
     environment:
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
     container_name: postgres
     volumes:
@@ -19,6 +21,9 @@ services:
     container_name: checklist
     environment:
       - PORT=${PORT}
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
     ports:
       - '3000:3000'
     depends_on:
