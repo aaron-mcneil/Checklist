@@ -16,7 +16,7 @@ export class ListsService {
     return this.listRepository.find();
   }
 
-  getById(id): Promise<List> | null {
+  getById(id: string): Promise<List> | null {
     return this.listRepository.findOneBy({list_id: id})
 
   }

@@ -14,9 +14,8 @@ export class ListsController {
   }
 
   @Get(':id')
-  getListById(@Param() params: any): Promise<List> | null | string { 
-    const {id} = params
-    return this.getListById(id);
+  getListById(@Param('id') id: string): Promise<List> | null { 
+    return this.listsService.getById(id)
   }
 
   @Post()
