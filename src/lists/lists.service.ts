@@ -12,13 +12,14 @@ export class ListsService {
     @InjectRepository(List) private readonly listRepository: Repository<List>,
   ){}
 
-  // getAll(): List[] {
-  //   return 'Hello World!';
-  // }
+  getAll(): Promise<List[]> {
+    return this.listRepository.find();
+  }
 
-  // getById(): List {
+  getById(id): Promise<List> | null {
+    return this.listRepository.findOneBy({list_id: id})
 
-  // }
+  }
 
   createList(createListDto: CreateListDto): Promise<List> {
     const list: List = new List();
