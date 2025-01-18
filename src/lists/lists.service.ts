@@ -18,6 +18,13 @@ export class ListsService {
 
   getById(id: string): Promise<List> | null {
     return this.listRepository.findOneBy({list_id: id})
+  }
+
+  async updateById(id: string, name: string): Promise<List> | null {
+
+    await this.listRepository.update({list_id: id}, {name})
+
+    return this.listRepository.findOneBy({list_id: id})
 
   }
 
