@@ -1,22 +1,24 @@
-import { Body, Controller, Get, Param, Patch, Post, Req } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Query, Req, UsePipes, ValidationPipe } from '@nestjs/common';
 import { ListsService } from './lists.service';
-import { Request } from 'express';
 import { CreateListDto } from './dto/create-list.dto';
 import { List } from './entities/list.entity';
 import { UpdateListDto } from './dto/update-list.dto';
+import { GetListsDto } from './dto/get-lists.dto';
 
 @Controller('lists')
 export class ListsController {
   constructor(private readonly listsService: ListsService) {}
 
   @Get()
-  getLists(): Promise<List[]> { 
-    return this.listsService.getAll();
+  @UsePipes(new ValidationPipe({transform: true}))
+  async getLists(@Query() getListsDto: GetListsDto): Promise<List[]> { 
+    const {orderBy, isAscending, name} = getListsDto
+    return await this.listsService.getMany(orderBy, isAscending, name);
   }
 
   @Get(':id')
-  getListById(@Param('id') id: string): Promise<List> | null { 
-    return this.listsService.getById(id)
+  async getListById(@Param('id') id: string): Promise<List> | null { 
+    return await this.listsService.getById(id)
   }
 
   @Patch(':id')
@@ -26,7 +28,12 @@ export class ListsController {
   }
 
   @Post()
-  create(@Body() createListDto: CreateListDto) {
-    return this.listsService.createList(createListDto)
+  async create(@Body() createListDto: CreateListDto) {
+    return await this.listsService.createList(createListDto)
+  }
+
+  @Delete(':id')
+  async delete(@Param('id') id: string): Promise<void> {
+    return await this.listsService.deleteById(id)
   }
 }

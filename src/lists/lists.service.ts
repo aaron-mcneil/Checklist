@@ -3,7 +3,8 @@ import { CreateListDto } from './dto/create-list.dto';
 import { List } from './entities/list.entity';
 import { nanoid } from 'nanoid';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { FindManyOptions, Like, Repository } from 'typeorm';
+import { ListsOrderBy } from './dto/get-lists.dto';
 
 @Injectable()
 export class ListsService {
@@ -12,12 +13,37 @@ export class ListsService {
     @InjectRepository(List) private readonly listRepository: Repository<List>,
   ){}
 
-  getAll(): Promise<List[]> {
-    return this.listRepository.find();
+  async getMany(orderBy: ListsOrderBy, isAscending: Boolean, name: string | undefined): Promise<List[]> {
+
+    let conditions: FindManyOptions<List> = {}
+    const ascendingValue: 'ASC' | 'DESC' = isAscending ? 'ASC': 'DESC'
+
+    switch(orderBy) {
+      case ListsOrderBy.CREATED_AT: {
+        conditions.order = {'created_at': ascendingValue}
+        break;
+      }
+      case ListsOrderBy.MODIFIED_AT: {
+        conditions.order = {'modified_at': ascendingValue}
+        break;
+      }
+      case ListsOrderBy.NAME: {
+        conditions.order = {'name': ascendingValue}
+        break;
+      }
+      default: {
+        conditions.order = {'modified_at': ascendingValue}
+        break;
+      }
+    }
+
+    if(name) conditions.where = {name: Like(`%${name}%`)}
+
+    return await this.listRepository.find({...conditions});
   }
 
-  getById(id: string): Promise<List> | null {
-    return this.listRepository.findOneBy({list_id: id})
+  async getById(id: string): Promise<List> | null {
+    return await this.listRepository.findOneBy({list_id: id})
   }
 
   async updateById(id: string, name: string): Promise<List> | null {
@@ -25,13 +51,16 @@ export class ListsService {
     await this.listRepository.update({list_id: id}, {name})
 
     return this.listRepository.findOneBy({list_id: id})
-
   }
 
-  createList(createListDto: CreateListDto): Promise<List> {
+  async createList(createListDto: CreateListDto): Promise<List> {
     const list: List = new List();
     list.name = createListDto.name;
     list.list_id = nanoid()
-    return this.listRepository.save(list)
+    return await this.listRepository.save(list)
+  }
+
+  async deleteById(id: string): Promise<void> {
+    await this.listRepository.delete({list_id: id})
   }
 }
