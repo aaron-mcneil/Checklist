@@ -53,7 +53,7 @@ export class ListsService {
     return this.listRepository.findOneBy({list_id: id})
   }
 
-  async createList(createListDto: CreateListDto): Promise<List> {
+  async create(createListDto: CreateListDto): Promise<List> {
     const list: List = new List();
     list.name = createListDto.name;
     list.list_id = nanoid()

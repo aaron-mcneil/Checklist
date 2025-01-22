@@ -4,6 +4,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ListsModule } from './lists/lists.module';
 import { List } from './lists/entities/list.entity';
+import { ListItemsModule } from './listItems/listItems.module';
 
 @Module({
   imports: [    
@@ -19,6 +20,7 @@ import { List } from './lists/entities/list.entity';
     autoLoadEntities: true,
     }),
     ListsModule,
+    ListItemsModule
   ],
   controllers: [AppController],
   providers: [AppService],

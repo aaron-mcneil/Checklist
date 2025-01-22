@@ -11,25 +11,25 @@ export class ListsController {
 
   @Get()
   @UsePipes(new ValidationPipe({transform: true}))
-  async getLists(@Query() getListsDto: GetListsDto): Promise<List[]> { 
+  async getMany(@Query() getListsDto: GetListsDto): Promise<List[]> { 
     const {orderBy, isAscending, name} = getListsDto
     return await this.listsService.getMany(orderBy, isAscending, name);
   }
 
   @Get(':id')
-  async getListById(@Param('id') id: string): Promise<List> | null { 
+  async getById(@Param('id') id: string): Promise<List> | null { 
     return await this.listsService.getById(id)
   }
 
   @Patch(':id')
-  async updateListById(@Param('id') id: string, @Body() updateListDto: UpdateListDto): Promise<List> | null {
+  async updateById(@Param('id') id: string, @Body() updateListDto: UpdateListDto): Promise<List> | null {
     const {name} = updateListDto
     return await this.listsService.updateById(id, name)
   }
 
   @Post()
-  async create(@Body() createListDto: CreateListDto) {
-    return await this.listsService.createList(createListDto)
+  async create(@Body() createListDto: CreateListDto): Promise<List> {
+    return await this.listsService.create(createListDto)
   }
 
   @Delete(':id')
