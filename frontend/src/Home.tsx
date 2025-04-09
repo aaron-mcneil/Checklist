@@ -1,10 +1,17 @@
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
-import './App.css'
+import './Home.css'
 
-function App() {
+function Home() {
   const [count, setCount] = useState(0)
+  const navigate = useNavigate()
+
+  function handleClick() {
+    let checklistId = 123
+    navigate(`/checklist/${checklistId}`)
+  }
 
   return (
     <>
@@ -22,14 +29,18 @@ function App() {
           count is {count}
         </button>
         <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
+          Edit <code>src/Home.tsx</code> and save to test HMR
         </p>
       </div>
       <p className="read-the-docs">
         Click on the Vite and React logos to learn more
       </p>
+      <button onClick={handleClick}>
+        Click here to go to Checklist
+      </button>
+
     </>
   )
 }
 
-export default App
+export default Home
